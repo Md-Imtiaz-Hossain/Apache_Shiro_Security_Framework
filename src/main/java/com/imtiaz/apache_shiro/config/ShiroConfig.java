@@ -1,15 +1,10 @@
 package com.imtiaz.apache_shiro.config;
-import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
-import org.apache.shiro.realm.Realm;
+
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 
 @Configuration
 // Write from bottom to top to configure core components in config
