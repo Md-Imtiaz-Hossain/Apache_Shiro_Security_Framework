@@ -1,10 +1,11 @@
-package cn.ixinjiu.config;
+package com.imtiaz.apache_shiro.config;
 
-import cn.ixinjiu.entity.User;
-import cn.ixinjiu.entity.UserRole;
-import cn.ixinjiu.service.UserRoleService;
-import cn.ixinjiu.service.UserService;
+
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.imtiaz.apache_shiro.entity.User;
+import com.imtiaz.apache_shiro.entity.UserRole;
+import com.imtiaz.apache_shiro.service.UserRoleService;
+import com.imtiaz.apache_shiro.service.UserService;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -12,69 +13,64 @@ import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 
-/**
- * Created by XinChen on 2022-10-31
- *
- * @Description: TODO 自定义realm
- */
 public class MyRealm extends AuthorizingRealm {
     @Autowired
     private UserService userService;
     @Autowired
     private UserRoleService userRoleService;
 
-    // 认证
-    // 该方法可以判断用户是否可以成功认证，可抛出多种异常给controller，来判断用户的登录状态
+    // authentication
+    // This method can determine whether the user can successfully authenticate, and can throw various exceptions to the controller to determine the user's login status
     @Override
     protected AuthenticationInfo doGetAuthenticationInfo(AuthenticationToken authenticationToken) throws AuthenticationException {
-        System.out.println(" -------------------->  执行认证  <--------------------- ");
-        // 这个token是Controller层封装的token （ UsernamePasswordToken token = new UsernamePasswordToken(email, password); ）
+        System . out . println ( " --------------------> Execute Authentication<------------------- -- " );
+        // This token is the token encapsulated by the Controller layer ( UsernamePasswordToken token = new UsernamePasswordToken(email, password); )
         UsernamePasswordToken token = (UsernamePasswordToken) authenticationToken;
-        // 获取到用户名
+        // get username
         String username = token.getUsername();
-        // 打印一下看是否是用户名
+        // print to see if it is the username
         System.out.println("username = " + username);
 
-        // 根据用户名查询用户
+        // query user by username
         LambdaQueryWrapper<User> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(User::getEmail, username);
         User user = userService.getOne(queryWrapper);
         System.out.println("user =------------> " + user);
-        if (user == null) { // 如果没有查到用户，就返回null，Controller层捕获 UnknownAccountException 异常
+        if ( user == null ) { // If no user is found, return null, and the Controller layer catches UnknownAccountException
             return null;
-        } else { // 根据用户名查到了用户，比对密码是否正确
+        } else { // Find the user according to the user name, check whether the password is correct
 
-            // 三个参数：username（查询到的用户的用户名）, password（查询到的用户的密码）, realmName（自定义的Realm类名）
-            // 这个方法是在底层做判断，也就是通过用户名查到了user, 比对密码是否正确（user.getPassword() ?= token.getPassword()）
+            // Three parameters: username (queried user's username), password (queried user's password), realmName (customized Realm class name)
+            // This method is to judge at the bottom, that is, to find the user through the username, and compare whether the password is correct (user.getPassword() ?= token.getPassword())
             return new SimpleAuthenticationInfo(user.getEmail(), user.getPassword(), this.getName());
 
 //            return new SimpleAuthenticationInfo(user.getEmail(), user.getPassword(), MyRealm.class.getName());
         }
     }
 
-    // 授权
-    // 该方法用来判断是否有权限执行操作
+    // authorization
+    // This method is used to determine whether there is permission to perform the operation
     @Override
     protected AuthorizationInfo doGetAuthorizationInfo(PrincipalCollection principalCollection) {
-        System.out.println(" -------------------->  执行授权  <--------------------- ");
+        System .out .println ( " -------------------- > Execute Authorization< ------------------- -- " );
 
         String primaryPrincipal = (String) principalCollection.getPrimaryPrincipal();
-        System.out.println("身份信息 = " + primaryPrincipal);
-        // 根据用户名获取当前用户的权限信息
+        System .out .println ( "identity information = " + primaryPrincipal ) ;
+        // Get the permission information of the current user according to the username
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
-        // 根据用户名查询到用户
+        // Query the user by username
         User user = userService.getOne(new LambdaQueryWrapper<User>().eq(User::getEmail, primaryPrincipal));
-        // 根据用户的id获取权限id
+        // Get the permission id according to the user's id
         UserRole userRole = userRoleService.getOne(new LambdaQueryWrapper<UserRole>().eq(UserRole::getUserId, user.getId()));
-        // 将数据库中查询角色信息赋值给权限对象
-        if (userRole.getRoleId() == 1) {
+        // Assign the query role information in the database to the permission object
+        if ( userRole . getRoleId () == 1 ) {
             simpleAuthorizationInfo.addRole("admin");
-        } else if (userRole.getRoleId() == 2) {
+        } else  if ( userRole . getRoleId () == 2 ) {
             simpleAuthorizationInfo.addRole("user");
         } else {
             simpleAuthorizationInfo.addRole("test");
         }
-        // 返回权限信息对象
+        // Return permission information object
         return simpleAuthorizationInfo;
     }
 }

@@ -1,6 +1,4 @@
-package cn.ixinjiu.config;
-
-import cn.ixinjiu.controller.LoginController;
+package com.imtiaz.apache_shiro.config;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.spring.web.ShiroFilterFactoryBean;
@@ -12,29 +10,25 @@ import org.springframework.context.annotation.Configuration;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Created by XinChen on 2022-10-31
- *
- * @Description: TODO shiro的核心配置
- */
+
 @Configuration
-// 从下往上写   向config中配置核心组件
+// Write from bottom to top to configure core components in config
 public class ShiroConfig {
-    // 过滤器
-    // 注入安全管理器
+    // filter
+    // inject security manager
     @Bean
     public ShiroFilterFactoryBean getShiroFilterFactoryBean(@Qualifier("securityManager") DefaultWebSecurityManager defaultWebSecurityManager) {
         ShiroFilterFactoryBean bean = new ShiroFilterFactoryBean();
-        // 设置安全管理器
+        // set security manager
         bean.setSecurityManager(defaultWebSecurityManager);
 
-        // 添加shiro的内置过滤器
+        // add shiro's built-in filter
         /*
-         * anon:  无需认证就可以访问
-         * authc: 必须认证了才能让问
-         * user:  必须拥有记住我功能才能用
-         * perms: 拥有对某个资源的权限才能访问
-         * role:  拥有某个角色权限才能访问
+         * anon: access without authentication
+         * authc: must be authenticated to allow
+         * user: must have remember me function to use
+         * perms: Only those who have permission to a resource can access it
+         * role: Only with a certain role permission can access
          * */
 //        Map<String ,String > filterMap = new LinkedHashMap<>();
 
@@ -45,23 +39,23 @@ public class ShiroConfig {
 //
 //        bean.setFilterChainDefinitionMap(filterMap);
 
-        // 登录路径, 此demo在`LoginController`中配置过了
+        // Login path, this demo is configured in `LoginController`
 //        bean.setLoginUrl("/toLogin");
 
         return bean;
     }
 
-    // DefalutWebSecurityManager  安全管理器
-    // @Qualifier注解直接注入了`MyRealm`对象，用法可自行百度
+    // DefaultWebSecurityManager security manager
+    // @Qualifier annotation directly injects `MyRealm` object, you can use Baidu by yourself
     @Bean(name = "securityManager")
     public DefaultWebSecurityManager getDefaultWebSecurityManager(@Qualifier("myRealm") MyRealm myRealm) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        // 关联MyRealm
+        // Associate MyRealm
         securityManager.setRealm(myRealm);
         return securityManager;
     }
 
-    // 创建realm对象，需要自定义类
+    // To create a realm object, a custom class is required
     @Bean(name = "myRealm")
     public MyRealm myRealm() {
         return new MyRealm();

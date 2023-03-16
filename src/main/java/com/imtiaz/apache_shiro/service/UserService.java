@@ -1,7 +1,8 @@
-package cn.ixinjiu.service;
+package com.imtiaz.apache_shiro.service;
 
-import cn.ixinjiu.entity.User;
+
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.imtiaz.apache_shiro.entity.User;
 
 public interface UserService extends IService<User> {
 }

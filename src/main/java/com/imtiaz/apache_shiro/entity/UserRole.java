@@ -1,12 +1,8 @@
-package cn.ixinjiu.entity;
+package com.imtiaz.apache_shiro.entity;
+
 
 import lombok.Data;
 
-/**
- * Created by XinChen on 2022-11-01
- *
- * @Description: TODO
- */
 @Data
 public class UserRole {
     private int id;

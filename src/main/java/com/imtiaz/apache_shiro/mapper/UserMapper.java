@@ -1,7 +1,8 @@
-package cn.ixinjiu.mapper;
+package com.imtiaz.apache_shiro.mapper;
 
-import cn.ixinjiu.entity.User;
+
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.imtiaz.apache_shiro.entity.User;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper

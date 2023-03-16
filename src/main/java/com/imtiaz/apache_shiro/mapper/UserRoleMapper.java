@@ -1,7 +1,7 @@
-package cn.ixinjiu.mapper;
+package com.imtiaz.apache_shiro.mapper;
 
-import cn.ixinjiu.entity.UserRole;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
+import com.imtiaz.apache_shiro.entity.UserRole;
 import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
